@@ -45,11 +45,12 @@ class Directory extends React.Component {
 	}
 
 	// loop through state and destructure values of each object from sections -> pass them MenuItem
+	// ...otherSectionProp first catches all other properties into an array then spreads them back into properties to each MenuItem
 	render() {
 		return (
 			<div className="directory-menu">
-				{this.state.sections.map(({ title, id, imageUrl, size }) => (
-					<MenuItem key={id} title={title} imageUrl={imageUrl} size={size} />
+				{this.state.sections.map(({ id, ...otherSectionProps }) => (
+					<MenuItem key={id} {...otherSectionProps} />
 				))}
 			</div>
 		);

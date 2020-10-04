@@ -1,9 +1,11 @@
 import React from 'react';
 import './menu-item.styles.scss';
+import { withRouter } from 'react-router-dom';
 
 // react gives every html markup a style property. It takes object that has prop values equal to css values we want to apply
-const MenuItem = ({ title, imageUrl, size }) => (
-	<div className={`${size} menu-item`}>
+// history.push() -> redirects us to /somematchedURL/linkUel ex shop+/hats
+const MenuItem = ({ title, imageUrl, size, history, linkUrl, match }) => (
+	<div className={`${size} menu-item`} onClick={() => history.push(`${match.url}${linkUrl}`)}>
 		<div
 			style={{
 				backgroundImage: `url(${imageUrl})`,
@@ -17,4 +19,5 @@ const MenuItem = ({ title, imageUrl, size }) => (
 	</div>
 );
 
-export default MenuItem;
+// allows this MenuItem component to have access to router location/match/history props
+export default withRouter(MenuItem);
