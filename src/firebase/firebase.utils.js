@@ -56,7 +56,6 @@ export const firestore = firebase.firestore();
 const provider = new firebase.auth.GoogleAuthProvider();
 // always trigger google popup when we use this googleAuth provider
 provider.setCustomParameters({ prompt: 'select_account' });
-// this takes provider class we made, but for many differnet platforms - like twitter, fb etc
 export const signInWithGoogle = () => auth.signInWithPopup(provider);
 
 // export whole library
