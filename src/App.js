@@ -8,7 +8,7 @@ import Header from './components/header/header.component';
 import SignInSignUpPage from './pages/signin-signup/signin-signup.component';
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
-import { auth } from './firebase/firebase.utils';
+import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 
 // header outside of switch will always be loaded
 // class to store login state
@@ -27,8 +27,25 @@ class App extends React.Component {
 	// this connection is always open until component is mounted
 	componentDidMount() {
 		// this returns subscribtion and firebase.Unsubscribe() so if we call it again subscription ends
-		this.unsubscribeFromAuth = auth.onAuthStateChanged((user) => {
-			this.setState({ currentUser: user });
+		this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+			if (userAuth) {
+				// get referance and new user data to db
+				const userRef = await createUserProfileDocument(userAuth);
+				// listen to any changes to the data and get 1st state of data
+				userRef.onSnapshot((snapShot) => {
+					// add data to state's id from returned snapshot and all other data
+					this.setState({
+						currentUser: {
+							id: snapShot.id,
+							...snapShot.data(),
+						},
+					});
+					console.log(this.state);
+				});
+			} else {
+				// else currentUser state = null
+				this.setState({ currentUser: userAuth });
+			}
 		});
 	}
 

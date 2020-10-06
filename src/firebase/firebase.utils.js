@@ -14,6 +14,38 @@ const config = {
 	measurementId: 'G-MNVKM8YBYS',
 };
 
+// pass data to the db
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+	// exit if not authorised
+	if (!userAuth) return;
+
+	// returns a referance to a place in database
+	const userRef = firestore.doc(`users/${userAuth.uid}`);
+	// returns a data snapshot as an object
+	const snapShot = await userRef.get();
+
+	// exists checks if there are data and returns bool
+	if (!snapShot.exists) {
+		// get info from auth object + create date when data was added into db
+		const { displayName, email } = userAuth;
+		const createdAt = new Date();
+		// trycatch block to catch errors - these are going to be async operations
+		try {
+			await userRef.set({
+				displayName,
+				email,
+				createdAt,
+				...additionalData,
+			});
+		} catch (error) {
+			console.log('Error creating user', error.message);
+		}
+	}
+
+	// return user reference in case we need it
+	return userRef;
+};
+
 firebase.initializeApp(config);
 
 export const auth = firebase.auth();
