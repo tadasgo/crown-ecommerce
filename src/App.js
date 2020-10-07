@@ -3,47 +3,40 @@ import './App.css';
 // switch loads first matched route
 // route properties - exact (to check for exact or only part of the path), path, component
 import { Switch, Route } from 'react-router-dom';
+import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import { connect } from 'react-redux';
+import { setCurrentUser } from './redux/user/user.actions';
 
 import Header from './components/header/header.component';
 import SignInSignUpPage from './pages/signin-signup/signin-signup.component';
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 
 // header outside of switch will always be loaded
 // class to store login state
 class App extends React.Component {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			currentUser: null,
-		};
-
-		this.unsubscribeFromAuth = null;
-	}
+	unsubscribeFromAuth = null;
 
 	// keeps us logged in until we unsubscribe
 	// this connection is always open until component is mounted
 	componentDidMount() {
+		const { setCurrentUser } = this.props;
 		// this returns subscribtion and firebase.Unsubscribe() so if we call it again subscription ends
 		this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
 			if (userAuth) {
 				// get referance and new user data to db
 				const userRef = await createUserProfileDocument(userAuth);
-				// listen to any changes to the data and get 1st state of data
+				// listen to any changes to the data and get 1st state of data -> use action from redux to pass data to state
 				userRef.onSnapshot((snapShot) => {
-					// add data to state's id from returned snapshot and all other data
-					this.setState({
-						currentUser: {
-							id: snapShot.id,
-							...snapShot.data(),
-						},
+					setCurrentUser({
+						id: snapShot.id,
+						// get all other data from snapshot
+						...snapShot.data(),
 					});
 				});
 			} else {
-				// else currentUser state = null
-				this.setState({ currentUser: userAuth });
+				// else currentUser state = null, cuz auth = null
+				setCurrentUser(userAuth);
 			}
 		});
 	}
@@ -57,7 +50,7 @@ class App extends React.Component {
 	render() {
 		return (
 			<div>
-				<Header currentUser={this.state.currentUser} />
+				<Header />
 				<Switch>
 					<Route exact path="/" component={HomePage} />
 					<Route path="/shop" component={ShopPage} />
@@ -68,4 +61,12 @@ class App extends React.Component {
 	}
 }
 
-export default App;
+// passes an action, returns an object
+// whatever the name of the keys we return in that object will be the name of the props that get passed to our connected component.
+// redux func dispatch when activated will passess action to every reducer
+const mapDispatchToProps = (dispatch) => ({
+	setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+});
+
+// app doesnt need props, so we only pass action to update
+export default connect(null, mapDispatchToProps)(App);
