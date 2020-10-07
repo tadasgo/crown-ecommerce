@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 // switch loads first matched route
 // route properties - exact (to check for exact or only part of the path), path, component
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 import { connect } from 'react-redux';
 import { setCurrentUser } from './redux/user/user.actions';
@@ -47,6 +47,7 @@ class App extends React.Component {
 		this.unsubscribeFromAuth();
 	}
 
+	// switch only picks first matching. Render stuff based on conditions
 	render() {
 		return (
 			<div>
@@ -54,12 +55,17 @@ class App extends React.Component {
 				<Switch>
 					<Route exact path="/" component={HomePage} />
 					<Route path="/shop" component={ShopPage} />
-					<Route path="/signin" component={SignInSignUpPage} />
+					<Route exact path="/signin" render={() => (this.props.currentUser ? <Redirect to="/" /> : <SignInSignUpPage />)} />
 				</Switch>
 			</div>
 		);
 	}
 }
+
+// destructure state.user
+const mapStateToProps = ({ user }) => ({
+	currentUser: user.currentUser,
+});
 
 // passes an action, returns an object
 // whatever the name of the keys we return in that object will be the name of the props that get passed to our connected component.
@@ -69,4 +75,4 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 // app doesnt need props, so we only pass action to update
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
