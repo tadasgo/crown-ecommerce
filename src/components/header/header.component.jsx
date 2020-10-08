@@ -7,11 +7,13 @@ import { auth } from '../../firebase/firebase.utils';
 
 // creates ReactComponent from the provided file and calls it a Logo
 import { ReactComponent as Logo } from '../../assets/crown.svg';
+import CartIcon from '../cart-icon/cart-icon.component';
+import CartDropdown from '../cart-dropdown/cart-dropdown.component';
 
 import './header.styles.scss';
 
 // header for the page
-const Header = ({ currentUser }) => (
+const Header = ({ currentUser, hidden }) => (
 	<div className="header">
 		<Link className="logo-container" to="/">
 			<Logo className="logo" />
@@ -34,15 +36,19 @@ const Header = ({ currentUser }) => (
 					SIGN IN
 				</Link>
 			)}
+			<CartIcon />
 		</div>
+		{hidden ? null : <CartDropdown />}
 	</div>
 );
 
 // will receive the entire application state object as returned by calling store.getState().
 // function will receive the entire application state object as returned by calling store.getState() -> then we select the part that we care about for this particular component
 // Each key of the object you return will become a prop that gets passed to the component you're trying to connect
-const mapStateToProps = (state) => ({
-	currentUser: state.user.currentUser,
+// destructure state = {user: {currentUser: ..}, cart: {hidden: ..}}
+const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
+	currentUser,
+	hidden,
 });
 
 // connect function automatically takes the data from the store from provider, and passes it down as props to the connected component. When the data in the store changes, the passed down props changes, and the component is automatically re-rendered.
