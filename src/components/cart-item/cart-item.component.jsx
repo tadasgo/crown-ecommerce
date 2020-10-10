@@ -4,7 +4,7 @@ import './cart-item.styles.scss';
 
 const CartItem = ({ item: { imageUrl, price, name, quantity } }) => (
 	<div className="cart-item">
-		<img src={imageUrl} alt="Image of an item in cart" />
+		<img src={imageUrl} alt="An item in cart" />
 		<div className="item-details">
 			<span className="name">{name}</span>
 			<span className="price">
