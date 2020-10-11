@@ -19,3 +19,25 @@ export const addItemToCart = (cartItems, cartItemToAdd) => {
 	// so later iterations can access quantity
 	return [...cartItems, { ...cartItemToAdd, quantity: 1 }];
 };
+
+export const removeItemFromCart = (cartItems, cartItemToRemove) => {
+	const existingCartItem = cartItems.find((cartItem) => cartItem.id === cartItemToRemove.id);
+
+	// if its the last item in cart remove it
+	if (existingCartItem.quantity === 1) {
+		// get new array without matching item
+		return cartItems.filter((cartItem) => cartItem.id !== cartItemToRemove.id);
+	}
+
+	return cartItems.map((cartItem) => {
+		// reduce the quantity of only selected item, keep others the same
+		if (cartItem.id === cartItemToRemove.id) {
+			return {
+				...cartItem,
+				quantity: cartItem.quantity - 1,
+			};
+		} else {
+			return cartItem;
+		}
+	});
+};
