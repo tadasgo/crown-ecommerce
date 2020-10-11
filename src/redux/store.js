@@ -1,4 +1,6 @@
 import { createStore, applyMiddleware } from 'redux';
+// allows to cache store to local or session storage
+import { persistStore } from 'redux-persist';
 // handy for debugging
 import logger from 'redux-logger';
 
@@ -8,6 +10,7 @@ import rootReducer from './root-reducer';
 const middlewares = [logger];
 
 // gets rootReducer and all other middlewares in this case it only logger
-const store = createStore(rootReducer, applyMiddleware(...middlewares));
+export const store = createStore(rootReducer, applyMiddleware(...middlewares));
 
-export default store;
+// persisted version of our store
+export const persistor = persistStore(store);
