@@ -1,16 +1,21 @@
 import React from 'react';
-import './App.css';
 // switch loads first matched route
 // route properties - exact (to check for exact or only part of the path), path, component
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 import { connect } from 'react-redux';
-import { setCurrentUser } from './redux/user/user.actions';
+import { createStructuredSelector } from 'reselect';
 
 import Header from './components/header/header.component';
 import SignInSignUpPage from './pages/signin-signup/signin-signup.component';
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
+import CheckoutPage from './pages/checkout/checkout.component';
+
+import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import { setCurrentUser } from './redux/user/user.actions';
+import { selectCurrentUser } from './redux/user/user.selector';
+
+import './App.css';
 
 // header outside of switch will always be loaded
 // class to store login state
@@ -48,6 +53,7 @@ class App extends React.Component {
 	}
 
 	// switch only picks first matching. Render stuff based on conditions
+	// shop is not exact because we will do shop/womens etc..
 	render() {
 		return (
 			<div>
@@ -55,6 +61,7 @@ class App extends React.Component {
 				<Switch>
 					<Route exact path="/" component={HomePage} />
 					<Route path="/shop" component={ShopPage} />
+					<Route exact path="/checkout" component={CheckoutPage} />
 					<Route exact path="/signin" render={() => (this.props.currentUser ? <Redirect to="/" /> : <SignInSignUpPage />)} />
 				</Switch>
 			</div>
@@ -63,8 +70,8 @@ class App extends React.Component {
 }
 
 // destructure state.user
-const mapStateToProps = ({ user }) => ({
-	currentUser: user.currentUser,
+const mapStateToProps = createStructuredSelector({
+	currentUser: selectCurrentUser,
 });
 
 // passes an action, returns an object

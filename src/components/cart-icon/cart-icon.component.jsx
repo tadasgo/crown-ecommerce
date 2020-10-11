@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { toggleCartHidden } from '../../redux/cart/cart.actions';
-import { selectCartItemsCount } from '../../redux/cart/cart.selectors';
+import { createStructuredSelector } from 'reselect';
 
 import { ReactComponent as ShoppingIcon } from '../../assets/shopping-bag.svg';
+import { toggleCartHidden } from '../../redux/cart/cart.actions';
+import { selectCartItemsCount } from '../../redux/cart/cart.selectors';
 
 import './cart-icon.styles.scss';
 
@@ -15,8 +16,8 @@ const CartIcon = ({ toggleCartHidden, itemCount }) => (
 );
 
 // add up all quantities of cart items - memoized selector
-const mapStateToProps = (state) => ({
-	itemCount: selectCartItemsCount(state),
+const mapStateToProps = createStructuredSelector({
+	itemCount: selectCartItemsCount,
 });
 
 // maps action to flip hidden value to prop

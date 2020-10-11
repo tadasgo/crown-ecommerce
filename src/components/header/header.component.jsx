@@ -2,13 +2,17 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 // get higher order component -> take component and return one with props
 import { connect } from 'react-redux';
-// add firebase authetification funcs
-import { auth } from '../../firebase/firebase.utils';
+import { createStructuredSelector } from 'reselect';
 
 // creates ReactComponent from the provided file and calls it a Logo
 import { ReactComponent as Logo } from '../../assets/crown.svg';
 import CartIcon from '../cart-icon/cart-icon.component';
 import CartDropdown from '../cart-dropdown/cart-dropdown.component';
+// add firebase authetification funcs
+import { auth } from '../../firebase/firebase.utils';
+// selectors
+import { selectCartHidden } from '../../redux/cart/cart.selectors';
+import { selectCurrentUser } from '../../redux/user/user.selector';
 
 import './header.styles.scss';
 
@@ -46,9 +50,15 @@ const Header = ({ currentUser, hidden }) => (
 // function will receive the entire application state object as returned by calling store.getState() -> then we select the part that we care about for this particular component
 // Each key of the object you return will become a prop that gets passed to the component you're trying to connect
 // destructure state = {user: {currentUser: ..}, cart: {hidden: ..}}
-const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
+/* const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
 	currentUser,
 	hidden,
+}); */
+
+// same as ^ but with selector. Structured selector just automaticly pass state to each function. Saves some lines of code
+const mapStateToProps = createStructuredSelector({
+	currentUser: selectCurrentUser,
+	hidden: selectCartHidden,
 });
 
 // connect function automatically takes the data from the store from provider, and passes it down as props to the connected component. When the data in the store changes, the passed down props changes, and the component is automatically re-rendered.
