@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 // get higher order component -> take component and return one with props
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -14,36 +13,28 @@ import { auth } from '../../firebase/firebase.utils';
 import { selectCartHidden } from '../../redux/cart/cart.selectors';
 import { selectCurrentUser } from '../../redux/user/user.selector';
 
-import './header.styles.scss';
+import { HeaderContainer, LogoContainer, OptionsContainer, OptionDiv, OptionLink } from './header.styles';
 
 // header for the page
 const Header = ({ currentUser, hidden }) => (
-	<div className="header">
-		<Link className="logo-container" to="/">
+	<HeaderContainer>
+		<LogoContainer to="/">
 			<Logo className="logo" />
-		</Link>
-		<div className="options">
-			<Link className="option" to="/shop">
-				SHOP
-			</Link>
-			<Link className="option" to="/contact">
-				CONTACT
-			</Link>
+		</LogoContainer>
+		<OptionsContainer>
+			<OptionLink to="/shop">SHOP</OptionLink>
+			<OptionLink to="/contact">CONTACT</OptionLink>
 
 			{currentUser ? (
 				// if there is user logged in - button to sign out, else signin link
-				<div className="option" onClick={() => auth.signOut()}>
-					SIGN OUT
-				</div>
+				<OptionDiv onClick={() => auth.signOut()}>SIGN OUT</OptionDiv>
 			) : (
-				<Link className="option" to="/signin">
-					SIGN IN
-				</Link>
+				<OptionLink to="/signin">SIGN IN</OptionLink>
 			)}
 			<CartIcon />
-		</div>
+		</OptionsContainer>
 		{hidden ? null : <CartDropdown />}
-	</div>
+	</HeaderContainer>
 );
 
 // will receive the entire application state object as returned by calling store.getState().
