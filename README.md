@@ -1,6 +1,6 @@
 # Crown E-commerce
 
-​     E-commerce application build using React, Redux, React Router, Firebase, Stripe, SASS.
+​     E-commerce application built using React, Redux, React Router, Firebase, Stripe, SASS.
 
 
 
