@@ -5,7 +5,7 @@ import CustomButton from '../custom-button/custom-button.component';
 
 import { auth, createUserProfileDocument } from '../../firebase/firebase.utils';
 
-import './signup.styles.scss';
+import { SignUpContainer, SignUpTitle } from './signup.styles';
 
 class SignUp extends React.Component {
 	constructor() {
@@ -30,7 +30,10 @@ class SignUp extends React.Component {
 
 		try {
 			// create new user acc with specific email and password then gives back userAuth which is on key user so we destructure that. Then add data to database and save it
-			const { user } = await auth.createUserWithEmailAndPassword(email, password);
+			const { user } = await auth.createUserWithEmailAndPassword(
+				email,
+				password
+			);
 			await createUserProfileDocument(user, { displayName });
 			// clear form
 			this.setState({
@@ -52,21 +55,49 @@ class SignUp extends React.Component {
 	render() {
 		const { displayName, email, password, confirmPassword } = this.state;
 		return (
-			<div className="sign-up">
-				<h2 className="title">I do not have an account</h2>
+			<SignUpContainer>
+				<SignUpTitle>I do not have an account</SignUpTitle>
 				<span>Sign up with your email and password.</span>
 				<form className="sign-up-form" onSubmit={this.handleSubmit}>
-					<FormInput name="displayName" type="text" value={displayName} label="Username" handleChange={this.handleChange} required />
+					<FormInput
+						name="displayName"
+						type="text"
+						value={displayName}
+						label="Username"
+						handleChange={this.handleChange}
+						required
+					/>
 
-					<FormInput name="email" type="email" value={email} label="Email" handleChange={this.handleChange} required />
+					<FormInput
+						name="email"
+						type="email"
+						value={email}
+						label="Email"
+						handleChange={this.handleChange}
+						required
+					/>
 
-					<FormInput name="password" type="password" value={password} label="Password (atleast 6 characters)" handleChange={this.handleChange} required />
+					<FormInput
+						name="password"
+						type="password"
+						value={password}
+						label="Password (atleast 6 characters)"
+						handleChange={this.handleChange}
+						required
+					/>
 
-					<FormInput name="confirmPassword" type="password" value={confirmPassword} label="Confirm password" handleChange={this.handleChange} required />
+					<FormInput
+						name="confirmPassword"
+						type="password"
+						value={confirmPassword}
+						label="Confirm password"
+						handleChange={this.handleChange}
+						required
+					/>
 
 					<CustomButton type="submit">Sign Up</CustomButton>
 				</form>
-			</div>
+			</SignUpContainer>
 		);
 	}
 }
