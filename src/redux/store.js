@@ -3,11 +3,12 @@ import { createStore, applyMiddleware } from 'redux';
 import { persistStore } from 'redux-persist';
 // handy for debugging
 import logger from 'redux-logger';
+import thunk from 'redux-thunk';
 
 // import combineReducers with a name of rootReducer
 import rootReducer from './root-reducer';
 
-const middlewares = [];
+const middlewares = [thunk];
 
 // only apply logger middleware if we are in development
 if (process.env.NODE_ENV === 'development') {

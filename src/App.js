@@ -23,10 +23,10 @@ class App extends React.Component {
 	unsubscribeFromAuth = null;
 
 	// keeps us logged in until we unsubscribe
-	// this connection is always open until component is mounted
 	componentDidMount() {
 		const { setCurrentUser } = this.props;
 		// this returns subscribtion and firebase.Unsubscribe() so if we call it again subscription ends
+		// we pass observer next function here
 		this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
 			if (userAuth) {
 				// get referance and new user data to db
@@ -40,7 +40,7 @@ class App extends React.Component {
 					});
 				});
 			} else {
-				// else currentUser state = null, cuz auth = null
+				// else currentUser state = null, because auth = null
 				setCurrentUser(userAuth);
 			}
 		});
